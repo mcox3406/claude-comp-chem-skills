@@ -9,6 +9,8 @@ Claude Code skills for cheminformatics, molecular simulation, and AI for science
 | `rdkit` | Molecular fingerprints, drawing, property calculations, parsing (up-to-date API patterns) |
 | `mol-ml` | ML workflows for molecules: scaffold splitting, fingerprint selection, avoiding data leakage |
 | `pkg-mgmt` | Python package/environment management with uv and mamba |
+| `pymatgen` | Materials science: crystal structures (CIF, POSCAR), phase diagrams, band structure, Materials Project API |
+| `torch_geometric` | Graph Neural Networks (PyG): node/graph classification, GCN, GAT, GraphSAGE, molecular property prediction |
 
 ## Installation
 
