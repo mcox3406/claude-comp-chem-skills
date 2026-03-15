@@ -31,12 +31,26 @@ Host engaging
 | sched_mit_ccoley | node1236 | 52 (2x Intel 6230R) | 8x 2080 Ti | 11 GB | 512 GB |
 | sched_mit_ccoley | node1237 | 52 (2x Intel 6230R) | 8x 2080 Ti | 11 GB | 512 GB |
 | sched_mit_ccoley | node1238 | 128 (2x AMD EPYC 7702) | — | — | — |
-| pi_ccoley | node2436 | 128 (2x Intel 8562Y+) | 4x H100 | 80 GB | — |
-| pi_ccoley | node2519-2522 | 128 (2x AMD EPYC 7513) | — | — | — |
+| pi_ccoley | node2436 | 64 (2x Intel 8562Y+) | 4x H100 | 80 GB | 1031 GB |
+| pi_ccoley | node2519-2522 | 64 (2x AMD EPYC 7513) | — | — | 257 GB |
 
 **Resource etiquette for node1236/1237:** 52 CPUs and 512 GB across 8 GPUs. Use `-n 6 --mem-per-cpu=8G` per single-GPU job so all 8 GPUs can run simultaneously. Requesting too many CPUs or too much memory per job blocks other GPUs from being used.
 
 Prefer CPU-only nodes (node1238, node2519-2522) for non-GPU work.
+
+## ChemE Department Nodes
+
+| Partition | Node | CPUs | GPUs | RAM | Notes |
+|-----------|------|------|------|-----|-------|
+| ou_cheme | node4110 | 128 (2x64 cores) | — | 770 GB | ou_cheme only (not in mit_preemptable) |
+| ou_cheme | node4111-4116 | 128 (2x64 cores) | — | 770 GB | also in mit_preemptable |
+| ou_cheme | node4117 | 128 (2x64 cores) | — | 1540 GB | high-memory node, also in mit_preemptable |
+
+Both `ou_cheme` and `ou_cheme_preemptable` partitions cover all 8 nodes. Most nodes are also in `mit_preemptable`.
+
+GPU nodes on order (not yet available):
+- 3x RTX 6000 nodes: 172 CPUs, 2048 GB RAM, 8x RTX PRO 6000 Blackwell
+- 2x H200 nodes: 120 CPUs, 2048 GB RAM, 8x H200 (HGX board)
 
 ## Public Partitions
 
