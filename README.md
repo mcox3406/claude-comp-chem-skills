@@ -1,16 +1,6 @@
 # Computational Chemistry Skills for Claude
 
-Claude Code skills for cheminformatics, molecular simulation, and AI for science workflows.
-
-## Skills
-
-| Skill | Description |
-|-------|-------------|
-| `rdkit` | Molecular fingerprints, drawing, property calculations, parsing (up-to-date API patterns) |
-| `mol-ml` | ML workflows for molecules: scaffold splitting, fingerprint selection, avoiding data leakage |
-| `pkg-mgmt` | Python package/environment management with uv and mamba |
-| `pymatgen` | Materials science: crystal structures (CIF, POSCAR), phase diagrams, band structure, Materials Project API |
-| `torch_geometric` | Graph Neural Networks (PyG): node/graph classification, GCN, GAT, GraphSAGE, molecular property prediction |
+Claude Code skills for cheminformatics, materials informatics, molecular simulation, AI for science, and similar workflows that I find myself using frequently. The cluster-specific (e.g., MIT Engaging) ones are not intended for general use but will be very helpful to you if you are working on the same cluster at MIT.
 
 ## Installation
 
