@@ -74,7 +74,7 @@ Species order in POTCAR **must match** species order in POSCAR.
 #SBATCH -p sched_mit_rafagb
 #SBATCH -C centos7
 #SBATCH --nodes=1
-#SBATCH -n 16
+#SBATCH -n 4
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=4G
 #SBATCH -t 0-06:00:00
@@ -82,27 +82,24 @@ Species order in POTCAR **must match** species order in POSCAR.
 #SBATCH --output=%j_%x.log
 
 source ~/.bashrc
-export VASP=vasp_std
 module purge
 module use -a /nfs/rafagblab001/software/modulefiles
 module load vasp/6.2.1
 
-WORKDIR=$HOME/orcd/scratch/dft/$SLURM_JOB_NAME
-mkdir -p $WORKDIR
-cp INCAR POSCAR KPOINTS POTCAR $WORKDIR/
-cd $WORKDIR
+export OMP_NUM_THREADS=1
 
-srun $VASP > vasp.out 2>&1
-
-cp vasp.out OUTCAR OSZICAR CONTCAR CHGCAR AECCAR0 AECCAR2 $SLURM_SUBMIT_DIR/ 2>/dev/null
+cd $SLURM_SUBMIT_DIR
+srun --mpi=pmi2 /nfs/rafagblab001/software/vasp/vasp.6.2.1/bin/vasp_std
 ```
 
 Key points:
 - **`-C centos7` is mandatory** -- without it, jobs will fail on Rocky 8 nodes
 - **`-p sched_mit_rafagb`** is the best partition for VASP (CentOS 7, same group as POTCARs)
+- **`srun --mpi=pmi2`** is required -- plain `srun` conflicts with Intel MPI's wrapper, and `mpirun` is not available on compute nodes. The `--mpi=pmi2` flag tells SLURM to use PMI2 for process launching.
+- **Use full path to binary** (`/nfs/rafagblab001/software/vasp/vasp.6.2.1/bin/vasp_std`) -- the module adds it to PATH but using the full path is more reliable
 - Always `--nodes=1` to avoid cross-node MPI issues
-- `srun` handles MPI launching (do not use `mpirun`)
-- Copy inputs to scratch for I/O performance, copy results back
+- `OMP_NUM_THREADS=1` prevents VASP from spawning excessive threads
+- Run in `$SLURM_SUBMIT_DIR` directly -- no need to copy to scratch
 
 ## Typical Resource Requirements
 
@@ -127,7 +124,9 @@ scp local/files/* engaging1:~/path/to/remote/dir/
 |---------|-------|-----|
 | `execve(): vasp_std: No such file or directory` | Job ran on Rocky 8 node | Add `#SBATCH -C centos7` |
 | `module(s) are unknown: "intel/2017-01"` | Module loaded on Rocky 8 | Only load on CentOS 7 nodes/login |
+| `mpirun: command not found` | Intel MPI not in PATH on compute node | Use `srun --mpi=pmi2` instead |
+| MPI help text dump in log, VASP doesn't run | `srun` picks up Intel MPI's `mpiexec.slurm` wrapper | Use `srun --mpi=pmi2` with full path to binary |
 | `Permission denied` on POTCARs | Not in `sched_mit_rafagb` group | Ask admin to add you |
-| `rsync` hangs | Duo 2FA issue | Use `scp` instead |
+| `rsync` hangs | Duo 2FA issue | Use `scp` instead (create remote dirs first) |
 | POTCAR mismatch | Species order wrong | Match POSCAR species order exactly |
 | VASP 6.4+ INCAR tags fail | Binary is 6.2.1 | Don't use ML_LMLFF, etc. |
