@@ -114,6 +114,12 @@ kill -9 <pid>
 
 - **NFS stale file handles.** Caches stored in home dir (`~/.triton/cache`, `~/.cache/torch/`) can go stale when switching between machines. Fix: use local disk for caches (`export TRITON_CACHE_DIR=/tmp/triton_cache`) or nuke the cache (`rm -rf ~/.triton/cache`).
 - **All GPUs are 24 GB** (except molgpu08 at 11 GB).
+- **Torch / CUDA version mismatch.** NVIDIA driver on molgpu nodes is CUDA 12.4 (as of 2026-04). Recent PyTorch (2.10+) ships only cu130 wheels and will silently fall back to CPU with a driver-too-old warning. If `torch.cuda.is_available()` is `False` after a fresh install, pin torch to a cu124 build:
+  ```bash
+  ~/.local/bin/uv pip install --force-reinstall torch==2.5.1 \
+      --index-url https://download.pytorch.org/whl/cu124
+  ```
+  Verify with `python -c "import torch; print(torch.cuda.is_available())"`.
 
 ## LLM/VLM-Specific Notes
 
